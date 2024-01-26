@@ -13,15 +13,37 @@
   }
 }
 
+body {
+  font-family: "Tahoma";
+}
+
+p {
+  font-size: 12pt;
+  padding: 20px;
+}
+
 .App-header {
-  background-color: #282c34;
+  background-color: #edc8ff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-size: 24pt;
+  color: rgb(0, 0, 0);
+}
+
+.btn{
+  display: inline-block;
+  background-color: #fff;
+  font-size: 12pt;
+  padding: 5px;
+  width: 12%;
+}
+
+img {
+  vertical-align: middle;
+  padding: 5px;
 }
 
 .App-link {
