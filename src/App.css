@@ -22,9 +22,39 @@ body {
 
 p {
   font-size: 12pt;
+  padding: 10px;
+
+}
+
+.sectiontext {
   padding: 20px;
 }
 
+.column{
+  float: left;
+  font-size: 12pt;
+  background-color: #ffffff;
+  border-color: #000000;
+  border: solid;
+  border-width: 2px;
+  margin: 10px;
+  width: fit-content;
+  height: fit-content;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+}
+
+button {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.list_container {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+}
 .App-header {
   background-color: #edc8ff;
   min-height: 100vh;
@@ -44,6 +74,28 @@ p {
   padding: 7px;
   width: fit-content;
 }
+
+#acousticness {
+  background-color: #ffbfe2;
+}
+
+#danceability {
+  background-color: #ffdfbf;
+}
+
+#energy {
+  background-color: #faffbf;
+}
+
+#speechiness {
+  background-color: #bfffc0;
+}
+
+#valence {
+  background-color: #bff6ff;
+}
+
+
 
 img {
   vertical-align: middle;
