@@ -15,7 +15,20 @@ function App() {
 
   const [loaded, setLoaded] = useState("")
 
+  const [tracksShowing, setShowing] = useState("")
+
   const [showLists, setListView] = useState("")
+
+  var startIndex = 0;
+
+
+  async function fetchProfile(token) {
+    const result = await fetch("https://api.spotify.com/v1/me", {
+        method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    console.log(result)
+}
 
   useEffect(() => {
     const hash = window.location.hash
@@ -29,7 +42,13 @@ function App() {
     }
 
     setToken(token)
+}, [])
 
+useEffect(() => {
+  window.addEventListener('beforeunload', logout)
+  return () => {
+    window.removeEventListener('beforeunload', logout)
+  }
 }, [])
 
 const logout = () => {
@@ -43,19 +62,22 @@ const [idparam, setIDs] = useState([])
 
 var songID=null;
 
-const searchArtists = async (e) => {
+async function searchArtists (e) {
   trackIDs = ""
+
   e.preventDefault()
   const {data} = await axios.get("https://api.spotify.com/v1/me/tracks", {
       headers: {
           Authorization: `Bearer ${token}`
       },
       params: {
+        offset: 0,
           limit: 50
       }
   })
 
   artists = data.items
+
 
   artists.map(song => {
     songID = song.track.id
@@ -67,6 +89,11 @@ const searchArtists = async (e) => {
   setIDs(trackIDs)
   console.log(trackIDs)
 
+  if (tracksShowing) {
+    console.log(feature)
+    getFeatures(e)
+  }
+  
   setLoaded(true)
 
 }
@@ -81,8 +108,7 @@ var yikes5=[]
 
 var audioFeatures = []
 
-var feature = ""
-
+const [feature, setFeature] = useState([])
 var firstlist = []
 var secondlist = []
 var thirdlist = []
@@ -95,15 +121,13 @@ const [listThree, setThree] = useState([])
 const [listFour, setFour] = useState([])
 const [listFive, setFive] = useState([])
 
-
-
 const handleClick= event => {
-  feature = event.currentTarget.id;
+  setFeature(event.currentTarget.id);
 }
 
 const[label, setLabel] = useState([])
 
-const getFeatures = async (d) => {
+async function getFeatures (d) {
   
   d.preventDefault()
   tracklist = await axios.get("https://api.spotify.com/v1/audio-features", {
@@ -132,6 +156,8 @@ const getFeatures = async (d) => {
   var fetchthird = ""
   var fetchfourth = ""
   var fetchfifth = ""
+
+  var firsturi = ""
 
   if (feature == "acousticness") {
     setLabel("Least acoustic to most acoustic")
@@ -224,6 +250,8 @@ const getFeatures = async (d) => {
 
   if (fetchfirst.length != 0) {
     fetchfirst = fetchfirst.substring(0, fetchfirst.length-1)
+    firsturi = firsturi.substring(0, firsturi.length-1)
+
     d.preventDefault()
     yikes1 = await axios.get("https://api.spotify.com/v1/tracks", {
         headers: {
@@ -284,6 +312,7 @@ if (fetchfourth.length != 0) {
   
 if (fetchfifth.length != 0) {
   fetchfifth = fetchfifth.substring(0, fetchfifth.length-1)
+  
   d.preventDefault()
   yikes5 = await axios.get("https://api.spotify.com/v1/tracks", {
       headers: {
@@ -294,7 +323,8 @@ if (fetchfifth.length != 0) {
       }
   })
 
-  fetchfifth=yikes5.data.tracks 
+  fifthlist=yikes5.data.tracks 
+  
 }
   
 
@@ -304,50 +334,7 @@ if (fetchfifth.length != 0) {
   setFour(fourthlist.map(item => <div>{item.name}</div>))
   setFive(fifthlist.map(item => <div>{item.name}</div>))
   setListView(true)
-}
-
-const makePlaylist = async (e) => {
-  e.preventDefault()
-  const {userdata} = await axios.get("https://api.spotify.com/v1/me", {
-      headers: {
-          Authorization: `Bearer ${token}`
-      },
-      params: {
-      }
-  })
-  const userid = userdata.id
-
-  const {playlistdata} = await axios.post("https://api.spotify.com/v1/users/{user_id}/playlists", {
-      headers: {
-          Authorization: `Bearer ${token}`
-      },
-      params: {
-        user_id: userid
-      },
-      body: {
-        "name": "New Playlist",
-        "description": "New playlist description",
-        "public": false
-    }
-  })
-
-  const playlistid = playlistdata.id
-
-  await axios.post("https://api.spotify.com/v1/playlists/{playlist_id}/tracks", {
-      headers: {
-          Authorization: `Bearer ${token}`
-      },
-      params: {
-        playlist_id: playlistid,
-        position: 0,
-      },
-      body: {
-        "name": "New Playlist",
-        "description": "New playlist description",
-        "public": false
-    }
-  })
-
+  setShowing(true)
 }
 
   return (
@@ -355,14 +342,16 @@ const makePlaylist = async (e) => {
       <header className="App-header">
           Sort Your Music
         <p class="sectiontext">
-          Sort your top 50 saved tracks into playlists based on their properties.
+          Sort your top 50 saved tracks based on their properties.
         </p>
                 {!token ?
                     <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`}> 
                     <input type="submit" value="Log in with Spotify &#127925;" class = "btn"/>
                     </a>
                     : <form onSubmit={searchArtists}>
-                    <button type={"submit"} class="btn">Load songs</button>
+
+                    
+                      <button type={"submit"} class="btn">Load songs</button>
                 </form>}
 
 {loaded ?
