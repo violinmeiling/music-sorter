@@ -6,7 +6,7 @@ import axios from 'axios';
 function App() {
 
   const CLIENT_ID = "c5a71d998c634176b0dc265461524ede"
-  const REDIRECT_URI = "http://localhost:3000"
+  const REDIRECT_URI = "https://violinmeiling.github.io/music-sorter/"
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
   const RESPONSE_TYPE = "token"
   const SCOPES = "user-library-read playlist-modify-public playlist-modify-private user-read-private user-read-email"
